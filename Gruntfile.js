@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 		
 		watch: {
 		    app : {
-		        files: ['<%= pkg.cfg.devPath%>/app/**/*.*'],
+		        files: ['<%= pkg.cfg.devPath%>/src/**/*.*'],
                 tasks: ['copyapp'],
                 options: {
                     interval: 300
@@ -17,9 +17,9 @@ module.exports = function(grunt) {
 		    app : {
                 files :[{
                     expand : true,
-                    cwd: '<%= pkg.cfg.devPath %>/app/',
+                    cwd: '<%= pkg.cfg.devPath %>/src/',
                     src: ['**/*.*'],
-                    dest : '\\\\115.29.190.31\\web\\nodesite\\app',
+                    dest : '\\\\115.29.190.31\\web\\anchel.cn\\www\\demo\\txftn\\',
                     filter : 'isFile'
                 }]
             }
