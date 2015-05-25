@@ -5,8 +5,14 @@
  * include encoding.js,use like follow:
  * var str = TextDecoder(encoding).decode(uint8array);
  */
-function bufferToString(buf){
+function bufferToString(buf, encoding){
     var view = new Uint8Array(buf);
+    
+    if(typeof(TextDecoder) == 'function'){
+        var str = new TextDecoder(encoding || 'utf-8').decode(view);
+        return str;
+    }
+    
     var narr = new Array(view.length);
     for(var i=0,len=view.length; i<len; i++){
        narr[i] = String.fromCharCode(view[i]);
@@ -21,8 +27,12 @@ function bufferToString(buf){
  * include encoding.js,use like follow:
  * var uint8array = TextEncoder(encoding).encode(str);
  */
-function stringToBuffer(str){
+function stringToBuffer(str, encoding){
     //var arr = str.split('');
+    if(typeof(TextEncoder) == 'function'){
+        var uint8array = new TextEncoder(encoding || 'utf-8').encode(str);
+        return uint8array.buffer;
+    }
     var narr = new Array(str.length);
     for(var i=0,len=str.length; i<len; i++){
         narr[i] = str.charCodeAt(i);

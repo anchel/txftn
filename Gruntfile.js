@@ -19,7 +19,7 @@ module.exports = function(grunt) {
                     expand : true,
                     cwd: '<%= pkg.cfg.devPath %>/src/',
                     src: ['**/*.*'],
-                    dest : '\\\\115.29.190.31\\web\\anchel.cn\\www\\demo\\txftn\\',
+                    dest : '\\\\10.12.197.159\\users\\user_00\\ancheltong\\v.qq.com\\anchel\\test\\txftn\\',
                     filter : 'isFile'
                 }]
             }

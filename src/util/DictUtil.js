@@ -12,7 +12,8 @@
      *         type : [int string arraybuffer]
      *         name : 'bodyLen',
      *         length : 2,
-     *         value : 23 or 'abc' or buffer
+     *         value : 23 or 'abc' or buffer,
+     *         encoding : 'utf-8' //needed when string
      *     },
      *     MagicNum : {
      *         index : 1,
@@ -72,8 +73,11 @@
                         }
                     }
                     
-                    if(field.type == 'string'){
-                        
+                    if(field.type == 'string'){ //自动将string -> arraybuffer
+                        var buffer = stringToBuffer(field.value, field.encoding);
+                        field.type = 'arraybuffer';
+                        field.length = buffer.byteLength;
+                        field.value = buffer;
                     }
                     
                     if(field.type == 'arraybuffer'){
@@ -106,7 +110,7 @@
             var byteTotalLength = me.byteTotalLength;
             var buffer = new ArrayBuffer(byteTotalLength);
             var view = new DataView(buffer);
-            var u8arr = new Uint8Array(buffer);
+            
             
             var offset = 0;
             for(var i=0,len=arr.length; i<len; i++){
@@ -130,18 +134,18 @@
                         
                 }
             }
-            
+            me.buffer = buffer;
             return buffer;
         },
         
         encodeIntField : function(view, field, offset){
             var length = field.length;
             if(length == 1){
-                view.setUint8(offset, field.value);
+                view.setUint8(offset, field.value, field.littleEndian);
             }else if(length == 2){
-                view.setUint16(offset, field.value);
+                view.setUint16(offset, field.value, field.littleEndian);
             }else if(length == 4){
-                view.setUint32(offset, field.value);
+                view.setUint32(offset, field.value, field.littleEndian);
             }else{
                 alert('encodeIntField: length invalid');
             }
@@ -156,6 +160,9 @@
             return offset + length;
         },
         
+        /**
+         * in most case , use arraybuffer instead of string 
+         */
         encodeStringField : function(view, field, offset){
             var length = field.length;
             var u8arr = new Uint8Array(view.buffer);
@@ -166,10 +173,103 @@
         },
         
         /*
-         * decode from a buffer
+         * decode to a json
          */
         decode: function(){
             var me = this;
+            
+            var buffer = me.buffer;
+            var arr = me.getFieldArray();
+            if(!buffer || arr.length <= 0) return null;
+            var view = new DataView(buffer);
+            var u8arr = new Uint8Array(buffer);
+            
+            var offset = 0;
+            for(var i=0,len=arr.length; i<len; i++){
+                var field = arr[i];
+
+                switch(field.type){
+                    case 'int':
+                        offset = me.decodeIntField(view, field, offset);
+                        break;
+                    
+                    case 'arraybuffer':
+                        offset = me.decodeArrayBufferField(view, field, offset);
+                        break;
+                    
+                    case 'string':
+                        offset = me.decodeStringField(view, field, offset);
+                        break;
+                    
+                    default:   
+                }
+                
+                
+            }
+            return me.fieldMap;
+        },
+        
+        decodeIntField : function(view, field, offset){
+            var me = this;
+            var length = field.length;
+            var value = 0;
+            var offset_new = offset+length;
+            if(view.byteLength < offset_new){ //the buffer'byteLength not enough to decode
+                
+            }else{
+                if(length == 1){
+                    value = view.getUint8(offset, field.littleEndian);
+                }else if(length == 2){
+                    value = view.getUint16(offset, field.littleEndian);
+                }else if(length == 4){
+                    value = view.getUint32(offset, field.littleEndian);
+                }else{
+                    alert('encodeIntField: length invalid');
+                }
+            }
+            field.value = value;
+            me.fixDecodeField(field);  //比如后面某个field的length依赖于这个，则需更新那个field.length
+            return offset_new;
+        },
+        
+        decodeArrayBufferField : function(view, field, offset){
+            var me = this;
+            var length = field.length;
+            var offset_new = offset+length;
+            if(view.byteLength < offset_new){ //the buffer'byteLength not enough to decode
+                field.value = null;
+            }else{
+                var u8arr = new Uint8Array(view.buffer, offset, length);
+                field.value = u8arr.buffer;
+            }
+            
+            return offset_new;
+        },
+        
+        decodeStringField : function(view, field, offset){
+            var me = this;
+            var length = field.length;
+            var offset_new = offset+length;
+            if(view.byteLength < offset_new){ //the buffer'byteLength not enough to decode
+                field.value = '';
+            }else{
+                var u8arr = new Uint8Array(view.buffer, offset, length);
+                field.value = bufferToString(u8arr.buffer, field.encoding);
+            }
+            
+            return offset_new;
+        },
+        
+        fixDecodeField : function(field){
+            var me = this;
+            var fieldMap = me.fieldMap;
+            if(field.calFieldName){  
+                var calFieldName = field.calFieldName;
+                if(fieldMap[calFieldName]){
+                    var calField = fieldMap[calFieldName];
+                    calField.length = field.value;
+                }
+            }
         },
         
         getFieldArray : function(){

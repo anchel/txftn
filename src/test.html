@@ -6,9 +6,15 @@
 			txftn test.html
 		</title>
 		<style>
-			
+			.file-cont {
+				margin-bottom : 20px;
+				border : 1px solid red;
+			}
 		</style>
 		<script src="lib/jquery.min.js"></script>
+		
+		<script src="lib/encoding-indexes.js"></script>
+		<script src="lib/encoding.js"></script>
 		
 		<script src="util/CommonUtil.js"></script>
 		<script src="util/DictUtil.js"></script>
@@ -21,8 +27,13 @@
 	</head>
 	<body>
 		<div>
-			<div>
+			<div class="file-cont">
+				<label>组包</label>
 				<input type="file" multiple="multiple" name="upload_file" id="upload_file" >
+			</div>
+			<div class="file-cont">
+				<label>解包</label>
+				<input type="file" multiple="multiple" name="decode_data" id="decode_data" >
 			</div>
 			
 			<div style="margin-top: 20px;">
