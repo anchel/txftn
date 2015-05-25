@@ -43,35 +43,35 @@ function onselect(files, type){
 function test_dict_encode(file){
     var dict = new Dict();
     
-    dict.add('MagicNum', {
+    dict.add({
         type : 'int',
         name : 'MagicNum',
         length : 4,
         value : 2882377846
     });
     
-    dict.add('Cmd', {
+    dict.add({
         type : 'int',
         name : 'Cmd',
         length : 4,
         value : 1007
     });
     
-    dict.add('SaveField', {
+    dict.add({
         type : 'int',
         name : 'SaveField',
         length : 4,
         value : 0
     });
     
-    dict.add('F1', {
+    dict.add({
         type : 'string',
         name : 'F1',
         length : 2,
         value : '中国'
     });
     
-    dict.add('Filedata', {
+    dict.add({
         type : 'arraybuffer',
         name : 'Filedata',
         length : file.byteLength,
@@ -88,48 +88,48 @@ function test_dict_encode(file){
 function test_dict_decode(file){
     var dict = new Dict();
     
-    dict.add('MagicNum', {
+    dict.add({
         type : 'int',
         name : 'MagicNum',
         length : 4,
         value : 0
     });
     
-    dict.add('Cmd', {
+    dict.add({
         type : 'int',
         name : 'Cmd',
         length : 4,
         value : 0
     });
     
-    dict.add('SaveField', {
+    dict.add({
         type : 'int',
         name : 'SaveField',
         length : 4,
         value : 0
     });
     
-    dict.add('bodyLen', {
+    dict.add({
         type : 'int',
         name : 'bodyLen',
         length : 4,
         value : 0
     });
     
-    dict.add('F1', {
+    dict.add({
         type : 'int',
         name : 'F1',
         length : 1,
         value : ''
     });
     
-    dict.add('F2', {
+    dict.add({
         type : 'int',
         name : 'F2',
         length : 4,
         value : 0
     });
-    dict.add('F3', {
+    dict.add({
         type : 'int',
         name : 'F3',
         length : 4,
@@ -137,9 +137,12 @@ function test_dict_decode(file){
     });
     
     dict.setBuffer(file);
-    
-    
+
     var json = dict.decode();
-    
     log(JSON.stringify(json));
+    
+    var buffer = dict.encode();
+    var str = bufferToHexString(buffer);
+    
+    log(str);
 }

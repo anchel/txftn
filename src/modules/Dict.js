@@ -43,11 +43,18 @@
     }
     
     Dict.prototype = {
-        add : function(name, field){
+        add : function(field){
             var me = this;
-            me.fieldMap[name] = field;
-            
-            field.index = me.fieldNum++;
+            var arr = typeof(field)=='array'?field:[field];
+            for(var i=0,len=arr.length; i<len; i++){
+                var tmpField = arr[i];
+                var index = me.fieldNum++;
+                if(!tmpField.name){
+                    tmpField.name = 'Field_' + index;
+                }
+                tmpField.index = index;
+                me.fieldMap[tmpField.name] = tmpField;
+            }
         },
         
         remove : function(){
