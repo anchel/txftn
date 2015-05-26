@@ -65,6 +65,14 @@ function test_dict_encode(file){
     });
     
     dict.add({
+        type : 'int',
+        name : 'F1_len',
+        length : 4,
+        value : 0,
+        calFieldName : 'F1'
+    });
+    
+    dict.add({
         type : 'string',
         name : 'F1',
         length : 2,

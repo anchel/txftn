@@ -72,13 +72,6 @@
             for(var fieldName in fieldMap){
                 if(fieldMap.hasOwnProperty(fieldName)){
                     var field = fieldMap[fieldName];
-                    if(field.calFieldName){  //该字段的值是另一个字段的长度
-                        var calFieldName = field.calFieldName;
-                        if(fieldMap[calFieldName]){
-                            var calField = fieldMap[calFieldName];
-                            field.value = calField.length;
-                        }
-                    }
                     
                     if(field.type == 'string'){ //自动将string -> arraybuffer
                         var buffer = stringToBuffer(field.value, field.encoding);
@@ -89,6 +82,19 @@
                     
                     if(field.type == 'arraybuffer'){
                         field.length = field.value.byteLength;
+                    }
+                }
+            }
+            //为什么分两次循环，是因为当type=string时，它的长度是字符串长度，而非字节长度，所以需要前面的循环来进行修正
+            for(var fieldName in fieldMap){
+                if(fieldMap.hasOwnProperty(fieldName)){
+                    var field = fieldMap[fieldName];
+                    if(field.calFieldName){  //该字段的值是另一个字段的长度
+                        var calFieldName = field.calFieldName;
+                        if(fieldMap[calFieldName]){
+                            var calField = fieldMap[calFieldName];
+                            field.value = calField.length;
+                        }
                     }
                 }
             }
