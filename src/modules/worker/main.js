@@ -134,14 +134,7 @@
         };
         
         fr.onerror = function(e){
-            replyMsg({
-                eventType : EventType.REPLY.SCAN_ERROR,  //错误
-                result : {
-                    code : 111,
-                    msg : 'read error'
-                }
-            });
-            releaseRes();
+
         };
         
         fr.onabort = function(){
@@ -161,7 +154,7 @@
             }
             start = currentChunk * chunkSize;
             end = Math.min(fileSize, start+chunkSize);
-            fr.readAsArrayBuffer(file, start, end);
+            fr.readAsArrayBuffer(file.slice(start, end));
         }
         
         function releaseRes(){
@@ -275,7 +268,7 @@
             }
             start = currentChunk * chunkSize;
             end = Math.min(fileSize, start+chunkSize);
-            fr.readAsArrayBuffer(file, start, end);
+            fr.readAsArrayBuffer(file.slice(start, end));
         }
         
         function releaseRes(){
