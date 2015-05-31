@@ -58,28 +58,20 @@
     }
 
     //
-    function Sha1_calculator(file_size, buffer_size) {
+    function Sha1_calculator(file_size) {
         this.reset();
         
         this.block.file_size = file_size;
-        if(buffer_size){
-            this.buffer_size = buffer_size;
-        }
     }
 
 
     Sha1_calculator.prototype = {
-        init : function(file_size, buffer_size) {
-            this.reset();
-        
-            this.block.file_size = file_size;
-            if(buffer_size){
-                this.buffer_size = buffer_size;
-            }
+        init : function() {
+
         },
         reset : function(){
             this.hash = [1732584193, -271733879, -1732584194, 271733878, -1009589776];
-            this.buffer_size = 2 * 1024 * 1024;
+
             this.block = {
                 file_size : 0,
                 start : 0,

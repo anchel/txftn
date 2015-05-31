@@ -9,6 +9,7 @@
     // messages containing a jobid and a buffer
     // or blob object, and return the hash result.
     if (typeof FileReaderSync !== 'undefined') {
+        /*
         var reader = new FileReaderSync(), hasher = new Rusha(4 * 1024 * 1024);
         self.onmessage = function onMessage(event) {
             var hash, data = event.data.data;
@@ -25,6 +26,7 @@
                 });
             }
         };
+        */
     }
     var util = {
             getDataType: function (data) {
@@ -292,11 +294,9 @@
         this.digest = this.digestFromString = this.digestFromBuffer = this.digestFromArrayBuffer = function (str) {
             return hex(rawDigest(str).buffer);
         };
-        this.updateInit = function () {
+        this.init = function () {
             initState(self$2.heap, self$2.padMaxChunkLen);
         };
-        
-        this.init = this.updateInit;
         
         this.update = function (str) {
             var chunkLen = str.byteLength || str.length || str.size || 0;

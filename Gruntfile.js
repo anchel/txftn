@@ -7,13 +7,14 @@ module.exports = function(grunt) {
             options: {
 
             },
-            modules: {
+            worker: {
                 files: {
-                    '<%= pkg.cfg.debugPath %>/lib.js': [
-
-                    ],
-                    '<%= pkg.cfg.debugPath %>/main.js': [
-
+                    './src/dist/alg-worker.js': [
+                        './src/modules/ConstDef.js',
+                        './src/modules/algorithm/md5-spark.js',
+                        './src/modules/algorithm/sha1-calculator.js',
+                        './src/modules/algorithm/sha1-rusha.js',
+                        './src/modules/worker/main.js'
                     ]
                 }
             }
@@ -44,7 +45,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
-	grunt.registerTask('copyapp', ['copy:app']);
+	grunt.registerTask('copyapp', ['concat', 'copy:app']);
 
     grunt.registerTask('default', ['copyapp']);
 };
