@@ -43,7 +43,9 @@ function stringToBuffer(str, encoding){
 
 
 function bufferToHexString(buf){
-    var view = new Uint8Array(buf);
+    var uint8 = new Uint8Array(buf);
+    return bytesToHex(uint8);
+    /*
     var narr = [];
     for(var i=0,len=view.length; i<len; i++){
        var c = view[i].toString(16);
@@ -51,4 +53,22 @@ function bufferToHexString(buf){
        narr.push(c);
     }
     return narr.join(' ');
+    */
 }
+
+// Convert big-endian 32-bit words to a byte array
+function wordsToBytes(words) {
+    for (var bytes = [], b = 0; b < words.length * 32; b += 8)
+        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+    return bytes;
+}
+
+// Convert a byte array to a hex string
+function bytesToHex(bytes) {
+    for (var hex = [], i = 0; i < bytes.length; i++) {
+        hex.push((bytes[i] >>> 4).toString(16));
+        hex.push((bytes[i] & 0xF).toString(16));
+    }
+    return hex.join("");
+}
+
