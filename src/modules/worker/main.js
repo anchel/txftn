@@ -111,6 +111,14 @@
             alg.append(e.target.result);
             
             currentChunk++;
+            
+            replyMsg({
+                eventType : EventType.REPLY.SCAN_ING,  //进行中
+                result : {
+                    processed : end
+                }
+            });
+            
             if(currentChunk == chunks){
                 var hash = alg.end();
                 
@@ -123,12 +131,6 @@
                     }
                 });
             }else{
-                replyMsg({
-                    eventType : EventType.REPLY.SCAN_ING,  //进行中
-                    result : {
-                        processed : end
-                    }
-                });
                 next();
             }
         };
@@ -218,6 +220,14 @@
             alg.update(e.target.result);
             
             currentChunk++;
+            
+            replyMsg({
+                eventType : EventType.REPLY.SCAN_ING,  //进行中
+                result : {
+                    processed : end
+                }
+            });
+            
             if(currentChunk == chunks){
                 var hash = alg.end();
                 
@@ -230,12 +240,7 @@
                     }
                 });
             }else{
-                replyMsg({
-                    eventType : EventType.REPLY.SCAN_ING,  //进行中
-                    result : {
-                        processed : end
-                    }
-                });
+                
                 next();
             }
         };

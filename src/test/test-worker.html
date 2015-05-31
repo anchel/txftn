@@ -21,6 +21,9 @@
             <header>
                 <h1>Worker Test</h1>
             </header>
+			<div style="margin-bottom:20px;">
+				<button id="btn_cancel">Cancel</button>
+			</div>
             <div>
                 <input type="file" id="file">
                 <div id="box"> </div>
@@ -58,6 +61,7 @@
 			}
 		
 			var file = null;
+			var uniqueKey;
 			var worker = new Worker('../dist/alg-worker.js');
 			worker.addEventListener('message', function(e){
 				
@@ -65,7 +69,8 @@
 				var evType = data.eventType;
 				switch(evType){
 					case EventType.REPLY.SCAN_START:
-						plog('scan start');
+						uniqueKey = data.result.uniqueKey;
+						plog('scan start ' + data.result.uniqueKey);
 						break;
 					case EventType.REPLY.SCAN_ING:
 						var processed = data.result.processed;
@@ -73,7 +78,7 @@
 						progress((processed*100/file.size).toFixed(2) + '%');
 						break;
 					case EventType.REPLY.SCAN_SUCCESS:
-						plog('scan success ' + data.result.md5);
+						plog('scan success ' + data.result.sha1);
 						break;
 					case EventType.REPLY.SCAN_CANCEL:
 						plog('scan cancel');
@@ -87,18 +92,23 @@
             document.getElementById("file").addEventListener("change", function(e) {
 				
 				file = document.getElementById("file").files[0];
-                
-				
-				
+
 				worker.postMessage({
 					eventType : EventType.SEND.FILE_SCAN,
-					algType : AlgType.MD5,
+					algType : AlgType.SHA1,
 					fileInfo : {
 					    file : file,
 						chunkSize : 2097152
 					}
 				});
             });
+			
+			$('#btn_cancel').on('click', function(e){
+				worker.postMessage({
+					eventType : EventType.SEND.FILE_SCAN_CANCEL,
+					uniqueKey : uniqueKey
+				});
+			});
         </script>
     </body>
 </html>
