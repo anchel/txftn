@@ -5,7 +5,23 @@
  * http://code.google.com/p/crypto-js/wiki/License
  */
 
-importScripts('crypto-min.js');
+//importScripts('crypto-min.js');
+
+// Convert big-endian 32-bit words to a byte array
+function wordsToBytes(words) {
+    for (var bytes = [], b = 0; b < words.length * 32; b += 8)
+        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+    return bytes;
+}
+
+// Convert a byte array to a hex string
+function bytesToHex(bytes) {
+    for (var hex = [], i = 0; i < bytes.length; i++) {
+        hex.push((bytes[i] >>> 4).toString(16));
+        hex.push((bytes[i] & 0xF).toString(16));
+    }
+    return hex.join("");
+}
 
 function sha1(m, hash) {
     var w = [];
@@ -140,7 +156,7 @@ function hash_file(fileid, file) {
 
             self.hash = sha1(message, self.hash);
 
-            output.sha_value = Crypto.util.bytesToHex(Crypto.util.wordsToBytes(self.hash));
+            output.sha_value = bytesToHex(wordsToBytes(self.hash));
         } else {
             self.hash = sha1(message, self.hash);
         }
