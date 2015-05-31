@@ -40,6 +40,7 @@
         
         this.fieldNum = 0;
         this.fieldMap = {};
+        this.fieldArr = []; 
     }
     
     Dict.prototype = {
@@ -55,6 +56,27 @@
                 tmpField.index = index;
                 me.fieldMap[tmpField.name] = tmpField;
             }
+            
+            me.fieldArr = me.getFieldArray();
+        },
+        
+        update : function(name, props){
+            var me = this;
+            var field = me.fieldMap[name];
+            if(!field){
+                return;
+            }
+            
+            for(var p in props){
+                if(props.hasOwnProperty(p)){
+                    field[p] = props[p];
+                }
+            }
+        },
+        
+        get : function(name){
+            var me = this;
+            
         },
         
         remove : function(){
