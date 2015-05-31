@@ -115,7 +115,7 @@
             }
             message = null;
             
-            block.start += bufLen;
+            block.start = block.end;
         },
         end : function() {
             var me = this;

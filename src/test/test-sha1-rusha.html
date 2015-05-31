@@ -7,18 +7,18 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-        <title>Algorithm Test</title>
+        <title>Rusha Algorithm Test</title>
         <meta name="author" content="Mofei">
-        <meta name="viewport" content="width=device-width; initial-scale=1.0;">
         
-		<script type="text/javascript" src="../modules/algorithm/sha1-calculator.js"></script>
+        
+		<script type="text/javascript" src="../modules/algorithm/sha1-rusha.js"></script>
 		
     </head>
 
     <body style="background-color:black; color:white;">
         <div>
             <header>
-                <h1>Algorithm Test</h1>
+                <h1>Rusha Algorithm Test</h1>
             </header>
             <div>
                 <input type="file" id="file">
@@ -49,10 +49,9 @@
 					currentChunk = 0, 
 					//spark = new SparkMD5();
 					//spark = new SparkMD5.ArrayBuffer();
-					spark = new Sha1_calculator(file.size);
-				
-				//alert(typeof blobSlice);
-				//alert(typeof file.slice);
+					spark = new Rusha(chunkSize);
+					spark.init();
+
 
                 fr.onload = function(e) {
 				//	alert("read chunk nr " + (currentChunk + 1) + " of " + chunks);

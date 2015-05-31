@@ -234,7 +234,7 @@
         };
         // Iinitializethe datastructures according
         // to a chunk siyze.
-        init(chunkSize || 64 * 1024);
+        init(chunkSize || 1024 * 1024);
         var initState = function (heap, padMsgLen) {
             self$2.chunkOffset = 0;
             var io = new Int32Array(heap, padMsgLen + 320, 5);
@@ -295,6 +295,9 @@
         this.updateInit = function () {
             initState(self$2.heap, self$2.padMaxChunkLen);
         };
+        
+        this.init = this.updateInit;
+        
         this.update = function (str) {
             var chunkLen = str.byteLength || str.length || str.size || 0;
             var accumulatedMsgSize = self$2.chunkOffset + chunkLen;
@@ -311,6 +314,8 @@
         this.hexFinalize = function () {
             return hex(rawFinalize());
         };
+        
+        this.end = this.hexFinalize;
     };
     
     // The low-level RushCore module provides the heart of Rusha,

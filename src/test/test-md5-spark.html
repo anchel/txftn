@@ -1,0 +1,89 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <title>SparkMD5 Algorithm Test</title>
+        <meta name="author" content="Mofei">
+        
+        
+		<script type="text/javascript" src="../modules/algorithm/md5-spark.js"></script>
+		
+    </head>
+
+    <body style="background-color:black; color:white;">
+        <div>
+            <header>
+                <h1>SparkMD5 Algorithm Test</h1>
+            </header>
+            <div>
+                <input type="file" id="file">
+                <div id="box"> </div>
+				<div id="progress"></div>
+            </div>
+            <footer>
+                <p>
+                    
+                </p>
+            </footer>
+        </div>
+        <script type="text/javascript">
+			//alert(navigator.userAgent);
+			window.onerror = function (errorMsg, url, lineNumber) {
+				alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
+			}
+        var d1,d2;
+		
+            document.getElementById("file").addEventListener("change", function(e) {
+				
+				
+                var fr = new FileReader(), box = document.getElementById('box'), progress = document.getElementById('progress');
+                var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice, 
+					file = document.getElementById("file").files[0], 
+					chunkSize = 2097152, 
+					chunks = Math.ceil(file.size / chunkSize), 
+					currentChunk = 0, 
+					//spark = new SparkMD5();
+					spark = new SparkMD5.ArrayBuffer();
+					
+
+                fr.onload = function(e) {
+				//	alert("read chunk nr " + (currentChunk + 1) + " of " + chunks);
+                    console.log("read chunk nr", currentChunk + 1, "of", chunks);
+                    
+					spark.append(e.target.result);
+                    // append binary string
+                    currentChunk++;
+					
+					d2 = new Date();
+					var doffset = (d2 - d1)/1000;
+
+                    if (currentChunk < chunks) {
+						progress.innerHTML = (currentChunk*100/chunks).toFixed(2) + '%, time: ' +doffset.toFixed(1);
+                        loadNext();
+                    } else {
+						
+                        console.log("finished loading");
+                        box.innerHTML = 'hash:' + spark.end();
+						progress.innerHTML = '100%, time: ' + doffset.toFixed(1);
+                        console.info("computed hash", spark.end());
+                        // compute hash
+                    }
+                };
+
+                function loadNext() {
+                    var start = currentChunk * chunkSize, end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+					
+                    fr.readAsArrayBuffer(blobSlice.call(file, start, end));
+					//fr.readAsBinaryString(blobSlice.call(file, start, end));
+                }
+				d1 = new Date();
+                loadNext();
+            });
+        </script>
+    </body>
+</html>
