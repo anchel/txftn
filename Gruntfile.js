@@ -3,7 +3,21 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		//banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd HH:MM:ss") %>\n' + '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' + ' * Copyright (c) <%= grunt.template.today("yyyy") %>\n * Powered by <%= pkg.author.team%>' + '\n */\n',
-		
+		concat: {
+            options: {
+
+            },
+            modules: {
+                files: {
+                    '<%= pkg.cfg.debugPath %>/lib.js': [
+
+                    ],
+                    '<%= pkg.cfg.debugPath %>/main.js': [
+
+                    ]
+                }
+            }
+        },
 		watch: {
 		    app : {
 		        files: ['<%= pkg.cfg.devPath%>/src/**/*.*'],
@@ -26,10 +40,11 @@ module.exports = function(grunt) {
 		}
 	});
 	
+	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
-	grunt.registerTask('copyapp', ['copy:app']);  //部署web管理端文件到外网阿里云服务器
+	grunt.registerTask('copyapp', ['copy:app']);
 
     grunt.registerTask('default', ['copyapp']);
 };
