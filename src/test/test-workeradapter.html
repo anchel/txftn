@@ -1,0 +1,133 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <title>WorkerAdapter Test</title>
+        <meta name="author" content="Mofei">
+        
+        
+		<script type="text/javascript" src="../lib/jquery.min.js"></script>
+		<script type="text/javascript" src="../dist/ftn.h5.main.js"></script>
+		
+    </head>
+
+    <body style="background-color:black; color:white;">
+        <div>
+            <header>
+                <h1>WorkerAdapter Test</h1>
+            </header>
+			<div style="margin-bottom:20px;">
+				<button id="btn_cancel_1">Cancel 1</button> <button id="btn_cancel_2">Cancel 2</button>
+			</div>
+            <div>
+                <input type="file" id="file">
+                <div id="box"> </div>
+				<div id="progress"></div>
+            </div>
+            <footer>
+                <p>
+                    
+                </p>
+            </footer>
+        </div>
+        <script type="text/javascript">
+
+			window.onerror = function (errorMsg, url, lineNumber) {
+				alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
+			}
+			
+			var FTN_H5 = window.FTN_H5;
+			var CONST_DEF = window.FTN_H5.CONST_DEF;
+			var EventType = CONST_DEF.EventType;
+			var AlgType = CONST_DEF.AlgType;
+			
+			function log(msg){
+				if(window.console && console.log){
+					console.log(msg);
+				}
+			}
+			function plog(msg){
+			    //var el = document.getElementById('box');
+				//el.innerHTML = el.innerHTML + msg + '<br>';
+			}
+			
+			function progress(msg){
+			    var el = document.getElementById('progress');
+				el.innerHTML = msg;
+			}
+		
+			var file = null;
+			
+			var wa = new FTN_H5.WorkerAdapter({
+				path : 'http://v1.qq.com/anchel/test/txftn/dist/ftn.h5.alg-worker.js'
+			});
+			
+			wa.on('message', function(data){
+				var evType = data.eventType;
+				var uniqueKey = data.uniqueKey;
+				
+				switch(evType){
+					case EventType.REPLY.SCAN_START:
+						
+						plog('scan start ' + data.algType);
+						break;
+					case EventType.REPLY.SCAN_ING:
+						var processed = data.result.processed;
+						
+						plog('scan process ' + data.algType + ' ' + processed);
+						break;
+					case EventType.REPLY.SCAN_SUCCESS:
+					
+						plog('scan success ' + data.algType + ' ' + data.result.hash);
+						break;
+					case EventType.REPLY.SCAN_CANCEL:
+					
+						plog('scan cancel ' + data.algType);
+						break;
+					default:
+				}
+			});
+			
+			document.getElementById("file").addEventListener("change", function(e) {
+				
+				file = document.getElementById("file").files[0];
+				/*
+				wa.calFileMd5({
+					file : file,
+					uniqueKey : 1,
+				}, function(){});
+				
+				wa.calFileSha1({
+					uniqueKey : 1,
+					file : file
+					
+				}, function(){});
+				*/
+				
+				var fr = new FileReader();
+				fr.onload = function(e){
+					wa.calBufferMd5({
+						uniqueKey : 1,
+						buffer : e.target.result
+						
+					}, function(){});
+				};
+				fr.readAsArrayBuffer(file);
+				
+            });
+			
+			$('#btn_cancel_1').on('click', function(e){
+				wa.cancelCal(1, AlgType.MD5);
+			});
+			
+			$('#btn_cancel_2').on('click', function(e){
+				wa.cancelCal(1, AlgType.SHA1);
+			});
+        </script>
+    </body>
+</html>
