@@ -32,6 +32,7 @@ module.exports = function(grunt) {
                         
                         './src/modules/worker-adapter/workerAdapter.js',
                         './src/modules/upload/upload.xhr.js',
+                        './src/modules/upload/upload.core.js',
                         './src/modules/upload/upload.main.js'
                     ]
                 }

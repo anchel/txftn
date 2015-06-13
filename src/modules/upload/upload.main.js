@@ -14,31 +14,15 @@
     var EventType = CONST_DEF.EventType;
     var AlgType = CONST_DEF.AlgType;
     
-    function UploadMain(){
-        Emitter.call(this);
+    var UploadMain = {
+        init : function(){
+            
+        },
         
-        this.fileInfo = {
-            uniqueKey : '',
-            file : null,
-            chunkSize : 2097152,
-            md5 : '',
-            sha1 : ''
-        };
-    }
-    
-    Util.inherit(UploadMain, Emitter);
-    
-    var prototype = {
-        
-        
-        
-    };
-    
-    for(var m in prototype){
-        if(prototype.hasOwnProperty(m)){
-            UploadMain.prototype[m] = prototype[m];
+        isSupport : function(){
+            
         }
-    }
+    };
     
     return UploadMain;
 });

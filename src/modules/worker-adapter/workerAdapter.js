@@ -123,6 +123,12 @@
         },
         
         calBufferMd5 : function(bufferInfo, callback){
+            /*
+             * bufferInfo : {
+             *     uniqueKey : 0,
+             *     buffer : arraybuffer
+             * }
+             */
             var msg = {
                 uniqueKey : bufferInfo.uniqueKey,
                 eventType : EventType.SEND.BUF_SCAN,
