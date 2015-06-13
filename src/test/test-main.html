@@ -22,7 +22,7 @@
                 <h1>Worker Test</h1>
             </header>
 			<div style="margin-bottom:20px;">
-				<button id="btn_cancel">Cancel</button>
+				<button id="btn_cancel_1">Cancel 1</button> <button id="btn_cancel_2">Cancel 2</button>
 			</div>
             <div>
                 <input type="file" id="file">
@@ -52,8 +52,8 @@
 				}
 			}
 			function plog(msg){
-			    var el = document.getElementById('box');
-				el.innerHTML = el.innerHTML + msg + '<br>';
+			    //var el = document.getElementById('box');
+				//el.innerHTML = el.innerHTML + msg + '<br>';
 			}
 			
 			function progress(msg){
@@ -64,7 +64,7 @@
 			var file = null;
 			
 			var wa = new FTN_H5.WorkerAdapter({
-				path : '../dist/ftn.h5.alg-worker.js'
+				path : 'http://v1.qq.com/anchel/test/txftn/dist/ftn.h5.alg-worker.js'
 			});
 			
 			wa.on('message', function(data){
@@ -87,7 +87,7 @@
 						break;
 					case EventType.REPLY.SCAN_CANCEL:
 					
-						plog('scan cancel');
+						plog('scan cancel ' + data.algType);
 						break;
 					default:
 				}
@@ -96,17 +96,25 @@
 			document.getElementById("file").addEventListener("change", function(e) {
 				
 				file = document.getElementById("file").files[0];
+				/*
 				wa.calMd5({
 					file : file,
 					uniqueKey : 1,
 				}, function(){});
-				
+				*/
 				wa.calSha1({
 					file : file,
 					uniqueKey : 1,
 				}, function(){});
             });
 			
+			$('#btn_cancel_1').on('click', function(e){
+				wa.cancelCal(1, AlgType.MD5);
+			});
+			
+			$('#btn_cancel_2').on('click', function(e){
+				wa.cancelCal(1, AlgType.SHA1);
+			});
         </script>
     </body>
 </html>

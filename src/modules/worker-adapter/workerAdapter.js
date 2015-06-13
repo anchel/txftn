@@ -119,6 +119,15 @@
                 fileInfo : fileInfo
             };
             this.postMessage(msg, callback);
+        },
+        
+        cancelCal : function(uniqueKey, algType, callback){
+            var msg = {
+                uniqueKey : uniqueKey,
+                eventType : EventType.SEND.FILE_SCAN_CANCEL,
+                algType : algType
+            };
+            this.postMessage(msg, callback);
         }
     };
     

@@ -150,7 +150,7 @@
         };
         
         function next(){
-            if(!uniqueKeyMap[uniqueKey]){
+            if(!uniqueKeyMap[uniqueKey+'_'+data.algType]){
                 replyMsg({
                     uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_CANCEL,
@@ -174,7 +174,7 @@
         }
         
         
-        uniqueKeyMap[uniqueKey] = 1;
+        uniqueKeyMap[uniqueKey+'_'+data.algType] = 1;
         
         replyMsg({
             uniqueKey : uniqueKey,
@@ -191,8 +191,8 @@
     //取消扫描
     function cancelScanFile(data){
         var uniqueKey = data.uniqueKey;
-        if(typeof uniqueKeyMap[uniqueKey] != 'undefined'){
-            uniqueKeyMap[uniqueKey] = 0; //置一个标志位为取消
+        if(typeof uniqueKeyMap[uniqueKey+'_'+data.algType] != 'undefined'){
+            uniqueKeyMap[uniqueKey+'_'+data.algType] = 0; //置一个标志位为取消
         }
     }
     
@@ -279,7 +279,7 @@
         };
         
         function next(){
-            if(!uniqueKeyMap[uniqueKey]){ //可能是被设置为取消状态了
+            if(!uniqueKeyMap[uniqueKey+'_'+data.algType]){ //可能是被设置为取消状态了
                 replyMsg({
                     uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_CANCEL,
@@ -302,7 +302,7 @@
             fr = null;
         }
        
-        uniqueKeyMap[uniqueKey] = 1;
+        uniqueKeyMap[uniqueKey+'_'+data.algType] = 1;
         
         replyMsg({
             uniqueKey : uniqueKey,
