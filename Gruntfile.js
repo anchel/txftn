@@ -14,7 +14,7 @@ module.exports = function(grunt) {
                         './src/modules/algorithm/md5-spark.js',
                         './src/modules/algorithm/sha1-calculator.js',
                         './src/modules/algorithm/sha1-rusha.js',
-                        './src/modules/worker/main.js'
+                        './src/modules/worker/alg-main.js'
                     ]
                 }
             },

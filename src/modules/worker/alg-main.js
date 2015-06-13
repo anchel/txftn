@@ -34,13 +34,6 @@
     var defaultChunkSize = 2097152;  //2 * 1024 * 1024
     
     
-    var getUniqueKey = (function(){
-        var idx = 0;
-        return function(pre){
-            return pre + (++idx);
-        };
-    })();
-    
     var uniqueKeyMap = {
         
     };
