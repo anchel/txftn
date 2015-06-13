@@ -96,7 +96,7 @@
             me.worker.postMessage(msg);
         },
         
-        calMd5 : function(fileInfo, callback){
+        calFileMd5 : function(fileInfo, callback){
             /*
             fileInfo : {
                 uniqueKey : 1,
@@ -112,12 +112,22 @@
             this.postMessage(msg, callback);
         },
         
-        calSha1 : function(fileInfo, callback){
+        calFileSha1 : function(fileInfo, callback){
             var msg = {
                 uniqueKey : fileInfo.uniqueKey,
                 eventType : EventType.SEND.FILE_SCAN,
                 algType : AlgType.SHA1,
                 fileInfo : fileInfo
+            };
+            this.postMessage(msg, callback);
+        },
+        
+        calBufferMd5 : function(bufferInfo, callback){
+            var msg = {
+                uniqueKey : bufferInfo.uniqueKey,
+                eventType : EventType.SEND.BUF_SCAN,
+                algType : AlgType.MD5,
+                bufferInfo : bufferInfo
             };
             this.postMessage(msg, callback);
         },

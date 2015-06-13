@@ -55,7 +55,7 @@
                 
                 break;
             case EventType.SEND.BUF_SCAN:
-                scanBuf(data);
+                scanBuffer(data);
                 
                 break;
             default:
@@ -312,20 +312,38 @@
     /**
      *  
      */
-    function scanBuf(data){
+    function scanBuffer(data){
         var algtype = data.algType;
         if(algtype == AlgType.SHA1){
-            scanBufSha1(data);
+            scanBufferSha1(data);
         }else{
-            scanBufMd5(data);
+            scanBufferMd5(data);
         }
     }
     
-    function scanBufMd5(data){
+    function scanBufferMd5(data){
+        /*
+         * {
+         *     buffer : buffer
+         * }
+         */
+        var uniqueKey = data.uniqueKey;
+        var bufferInfo = data.bufferInfo;
         
+        var alg = MD5_FACTORY.ArrayBuffer.hash;
+        
+        var hash = alg(bufferInfo.buffer);
+        replyMsg({
+            uniqueKey : uniqueKey,
+            eventType : EventType.REPLY.SCAN_SUCCESS,  //成功
+            algType : data.algType,
+            result : {
+                hash : hash
+            }
+        });
     }
     
-    function scanBufSha1(data){
+    function scanBufferSha1(data){
         
     }
     

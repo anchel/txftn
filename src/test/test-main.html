@@ -97,16 +97,28 @@
 				
 				file = document.getElementById("file").files[0];
 				/*
-				wa.calMd5({
+				wa.calFileMd5({
 					file : file,
 					uniqueKey : 1,
 				}, function(){});
-				*/
-				wa.calSha1({
+				
+				wa.calFileSha1({
 					uniqueKey : 1,
 					file : file
 					
 				}, function(){});
+				*/
+				
+				var fr = new FileReader();
+				fr.onload = function(e){
+					wa.calBufferMd5({
+						uniqueKey : 1,
+						buffer : e.target.result
+						
+					}, function(){});
+				};
+				fr.readAsArrayBuffer(file);
+				
             });
 			
 			$('#btn_cancel_1').on('click', function(e){
