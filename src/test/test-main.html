@@ -41,7 +41,8 @@
 				alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
 			}
 			
-			var CONST_DEF = self.FTN_H5.CONST_DEF;
+			var FTN_H5 = window.FTN_H5;
+			var CONST_DEF = window.FTN_H5.CONST_DEF;
 			var EventType = CONST_DEF.EventType;
 			var AlgType = CONST_DEF.AlgType;
 			
@@ -61,54 +62,51 @@
 			}
 		
 			var file = null;
-			var uniqueKey;
-			var worker = new Worker('../dist/ftn.h5.alg-worker.js');
-			worker.addEventListener('message', function(e){
-				
-				var data = e.data;
+			
+			var wa = new FTN_H5.WorkerAdapter({
+				path : '../dist/ftn.h5.alg-worker.js'
+			});
+			
+			wa.on('message', function(data){
 				var evType = data.eventType;
+				var uniqueKey = data.uniqueKey;
+				
 				switch(evType){
 					case EventType.REPLY.SCAN_START:
-						uniqueKey = data.result.uniqueKey;
-						plog('scan start ' + data.result.uniqueKey);
+						
+						plog('scan start ' + data.algType);
 						break;
 					case EventType.REPLY.SCAN_ING:
 						var processed = data.result.processed;
 						
-						progress((processed*100/file.size).toFixed(2) + '%');
+						plog('scan process ' + data.algType + ' ' + processed);
 						break;
 					case EventType.REPLY.SCAN_SUCCESS:
-						plog('scan success ' + data.result.sha1);
+					
+						plog('scan success ' + data.algType + ' ' + data.result.hash);
 						break;
 					case EventType.REPLY.SCAN_CANCEL:
+					
 						plog('scan cancel');
 						break;
 					default:
 				}
-				
-			}, false);
+			});
 			
-			
-            document.getElementById("file").addEventListener("change", function(e) {
+			document.getElementById("file").addEventListener("change", function(e) {
 				
 				file = document.getElementById("file").files[0];
-
-				worker.postMessage({
-					eventType : EventType.SEND.FILE_SCAN,
-					algType : AlgType.SHA1,
-					fileInfo : {
-					    file : file,
-						chunkSize : 2097152
-					}
-				});
+				wa.calMd5({
+					file : file,
+					uniqueKey : 1,
+				}, function(){});
+				
+				wa.calSha1({
+					file : file,
+					uniqueKey : 1,
+				}, function(){});
             });
 			
-			$('#btn_cancel').on('click', function(e){
-				worker.postMessage({
-					eventType : EventType.SEND.FILE_SCAN_CANCEL,
-					uniqueKey : uniqueKey
-				});
-			});
         </script>
     </body>
 </html>

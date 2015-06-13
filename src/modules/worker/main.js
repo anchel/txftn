@@ -106,6 +106,8 @@
         var alg = new MD5_FACTORY.ArrayBuffer();
         var start=0, end=0;
         
+        var uniqueKey = data.uniqueKey;
+        
         var fr = new FileReader(); //后续需要考虑firefox的 同步接口
         fr.onload = function(e){
             alg.append(e.target.result);
@@ -113,7 +115,9 @@
             currentChunk++;
             
             replyMsg({
+                uniqueKey : uniqueKey,
                 eventType : EventType.REPLY.SCAN_ING,  //进行中
+                algType : data.algType,
                 result : {
                     processed : end
                 }
@@ -125,9 +129,11 @@
                 releaseRes();
                 
                 replyMsg({
+                    uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_SUCCESS,  //成功
+                    algType : data.algType,
                     result : {
-                        md5 : hash
+                        hash : hash
                     }
                 });
             }else{
@@ -146,7 +152,9 @@
         function next(){
             if(!uniqueKeyMap[uniqueKey]){
                 replyMsg({
+                    uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_CANCEL,
+                    algType : data.algType,
                     result : {
                         
                     }
@@ -165,13 +173,15 @@
             fr = null;
         }
         
-        var uniqueKey = getUniqueKey('SCAN');
+        
         uniqueKeyMap[uniqueKey] = 1;
         
         replyMsg({
+            uniqueKey : uniqueKey,
             eventType : EventType.REPLY.SCAN_START,
+            algType : data.algType,
             result : {
-                uniqueKey : uniqueKey
+                
             }
         });
         
@@ -215,6 +225,8 @@
         
         var start=0, end=0;
         
+        var uniqueKey = data.uniqueKey;
+        
         var fr = new FileReader(); //后续需要考虑firefox的 同步接口
         fr.onload = function(e){
             alg.update(e.target.result);
@@ -222,7 +234,9 @@
             currentChunk++;
             
             replyMsg({
+                uniqueKey : uniqueKey,
                 eventType : EventType.REPLY.SCAN_ING,  //进行中
+                algType : data.algType,
                 result : {
                     processed : end
                 }
@@ -234,9 +248,11 @@
                 releaseRes();
                 
                 replyMsg({
+                    uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_SUCCESS,  //成功
+                    algType : data.algType,
                     result : {
-                        sha1 : hash
+                        hash : hash
                     }
                 });
             }else{
@@ -247,7 +263,9 @@
         
         fr.onerror = function(e){
             replyMsg({
+                uniqueKey : uniqueKey,
                 eventType : EventType.REPLY.SCAN_ERROR,  //错误
+                algType : data.algType,
                 result : {
                     code : 111,
                     msg : 'read error'
@@ -263,7 +281,9 @@
         function next(){
             if(!uniqueKeyMap[uniqueKey]){ //可能是被设置为取消状态了
                 replyMsg({
+                    uniqueKey : uniqueKey,
                     eventType : EventType.REPLY.SCAN_CANCEL,
+                    algType : data.algType,
                     result : {
                         
                     }
@@ -281,14 +301,15 @@
             fr.onabort = fr.onerror = fr.onload = null;
             fr = null;
         }
-        
-        var uniqueKey = getUniqueKey('SCAN');
+       
         uniqueKeyMap[uniqueKey] = 1;
         
         replyMsg({
+            uniqueKey : uniqueKey,
             eventType : EventType.REPLY.SCAN_START,
+            algType : data.algType,
             result : {
-                uniqueKey : uniqueKey
+                
             }
         });
         
