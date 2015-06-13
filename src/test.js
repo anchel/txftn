@@ -41,6 +41,7 @@ function onselect(files, type){
 }
 
 function test_dict_encode(file){
+    var Dict = FTN_H5.DataDict;
     var dict = new Dict();
     
     dict.add({
@@ -94,6 +95,7 @@ function test_dict_encode(file){
 }
 
 function test_dict_decode(file){
+    var Dict = FTN_H5.DataDict;
     var dict = new Dict();
     
     dict.add({

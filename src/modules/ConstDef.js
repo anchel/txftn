@@ -4,7 +4,8 @@
 
 (function(global, factory){
     
-    global.FTN_H5_CONST_DEF = factory();
+    global.FTN_H5 = global.FTN_H5 || {};
+    FTN_H5.CONST_DEF = factory();
     
 })(self || window, function(){
     var CONST_DEF = {

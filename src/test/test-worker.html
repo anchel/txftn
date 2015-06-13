@@ -41,7 +41,7 @@
 				alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
 			}
 			
-			var CONST_DEF = self.FTN_H5_CONST_DEF;
+			var CONST_DEF = self.FTN_H5.CONST_DEF;
 			var EventType = CONST_DEF.EventType;
 			var AlgType = CONST_DEF.AlgType;
 			
@@ -62,7 +62,7 @@
 		
 			var file = null;
 			var uniqueKey;
-			var worker = new Worker('../dist/alg-worker.js');
+			var worker = new Worker('../dist/ftn.h5.alg-worker.js');
 			worker.addEventListener('message', function(e){
 				
 				var data = e.data;

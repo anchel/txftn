@@ -1,8 +1,11 @@
 
 
-(function(global){
+(function(global, factory){
     
+    global.FTN_H5 = global.FTN_H5 || {};
+    FTN_H5.DataDict = factory();
     
+})(window, function(){
     
     /**
      * fieldMap = 
@@ -34,7 +37,7 @@
      *     }
      * }
      */
-    function Dict(){
+    function DataDict(){
         this.buffer = null;
         this.byteTotalLength = 0;
         
@@ -43,7 +46,7 @@
         this.fieldArr = []; 
     }
     
-    Dict.prototype = {
+    DataDict.prototype = {
         add : function(field){
             var me = this;
             var arr = typeof(field)=='array'?field:[field];
@@ -325,7 +328,6 @@
         }
     };
     
-    global.Dict = Dict;
-    
-})(window);
+    return DataDict;
+});
 
