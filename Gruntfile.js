@@ -21,6 +21,8 @@ module.exports = function(grunt) {
             main: {
                 files: {
                     './src/dist/ftn.h5.main.js': [
+                        './src/util/CommonUtil.js',
+                        
                         './src/modules/base/namespace.js',
                         './src/modules/base/Emitter.js',
                         './src/modules/common/util.js',
@@ -33,6 +35,16 @@ module.exports = function(grunt) {
                         './src/modules/upload/upload.main.js'
                     ]
                 }
+            }
+        },
+        uglify: {
+            main : {
+                files : [{
+                    expand : true,
+                    cwd : './src/dist',
+                    src : ['**/*.js'],
+                    dest : './src/dist'
+                }]
             }
         },
 		watch: {
@@ -61,8 +73,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-copy');
-
-	grunt.registerTask('copyapp', ['concat', 'copy:app']);
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+    
+    grunt.registerTask('dev', ['concat', 'copy:app']);
+	grunt.registerTask('copyapp', ['concat', 'uglify', 'copy:app']);
 
     grunt.registerTask('default', ['copyapp']);
 };

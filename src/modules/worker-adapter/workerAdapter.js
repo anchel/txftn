@@ -99,6 +99,7 @@
         calMd5 : function(fileInfo, callback){
             /*
             fileInfo : {
+                uniqueKey : 1,
                 file : file,
                 chunkSize : 2097152
             }*/
