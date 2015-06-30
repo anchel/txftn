@@ -74,6 +74,8 @@
         
         init : function(options){
             if(this.inited) return;
+            this.inited = true;
+            
             options = options || {};
             
             Util.extend(_options, defaultOptions, options);
@@ -85,6 +87,10 @@
         },
         
         cancel : function(fio){
+            
+        },
+        
+        openSelectFileWindow : function(){
             
         },
         
