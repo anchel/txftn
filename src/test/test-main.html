@@ -26,9 +26,12 @@
 			</div>
             <div>
                 <input type="file" id="file" class="upload_file_input">
-                <div id="box"> </div>
-				<div id="progress"></div>
             </div>
+			<div id="file_list" style="padding:10px; border-color:red;">
+				
+			</div>
+			<div id="box"> </div>
+			
             <footer>
                 <p>
                     
@@ -56,15 +59,49 @@
 				el.innerHTML = el.innerHTML + msg + '<br>';
 			}
 			
+			var fioMap = {
+			
+			};
+			
 			function onSelect(fio){
-				plog('onSelect ' + JSON.stringify(fio));
+				plog('onSelect ' + fio.name + ' ' + fio.size);
+				renderFio(fio);
+			}
+			
+			function renderFio(fio){
+				fioMap[fio.uniqueKey] = fio;
+				var str = '<div><span style="width:300px;display: inline-block;">{name}</span><span style="width:200px;display: inline-block;">{size}</span><button data-fiokey="{key}">Start</button></div>';
+				str = str.replace('{name}', fio.name);
+				str = str.replace('{size}', fio.size);
+				str = str.replace('{key}', fio.uniqueKey);
+				
+				$('#file_list').append(str);
+			}
+			
+			function onScanProgress(fio){
+				plog('onScanProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+			}
+			
+			function onUploadStart(fio){
+				plog('onUploadStart ' + fio.name + ' ' + fio.size + ' md5:' + fio.md5 + ' sha:' + fio.sha);
 			}
 			
 			FTN_H5.UploadMain.init({
 				triggerSelector : '.upload_file_input',
-				onSelect : onSelect
+				onSelect : onSelect,
+				onScanProgress : onScanProgress,
+				onUploadStart : onUploadStart
 			});
 			
+			$('#file_list').on('click', '[data-fiokey]', function(e){
+				e.preventDefault();
+				var me = $(this);
+				var key = me.attr('data-fiokey');
+				var fio = fioMap[key];
+				if(fio){
+					FTN_H5.UploadMain.start(fio);
+				}
+			});
         </script>
     </body>
 </html>

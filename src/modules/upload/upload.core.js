@@ -88,7 +88,8 @@
          * 每次计算完md5 或者 sha 都会触发该函数
          */
         _onAlgFinish : function(data){
-            var fio = this.fio;
+            var me = this;
+            var fio = me.fio;
             var algType = data.algType;
             var hash = data.result.hash;
             if(algType == AlgType.SHA1){
@@ -99,7 +100,10 @@
             
             //如果md5和sha1的值都计算完了，则进行下一步获取vid
             if(fio.sha && fio.md5){
-                this.getVid();
+                me.emit('uploadevent', {
+                    name : 'onUploadStart'
+                });
+            //    me.getVid();
             }
         },
         
@@ -115,8 +119,15 @@
                     
                     break;
                 case EventType.REPLY.SCAN_ING:
+                    var algType = data.algType;
                     var processed = data.result.processed;
-                    fio.processedSize = processed;
+                    if(algType == AlgType.SHA1){
+                        fio.processedSizeSha = processed;
+                    }else{
+                        fio.processedSizeMd5 = processed;
+                    }
+                    fio.processedSize = Math.min(fio.processedSizeSha, fio.processedSizeMd5);
+                    
                     me.emit('uploadevent', {
                         name : 'onScanProgress'
                     });

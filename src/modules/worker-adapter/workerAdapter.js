@@ -68,20 +68,40 @@
             switch(evType){
                 case EventType.REPLY.SCAN_START:
                     
-                    plog('scan start');
+                    //plog('scan start');
                     break;
                 case EventType.REPLY.SCAN_ING:
                     var processed = data.result.processed;
                     
-                    plog('scan process');
+                    //plog('scan process');
                     break;
                 case EventType.REPLY.SCAN_SUCCESS:
                 
-                    plog('scan success ' + data.result.hash);
+                    //plog('scan success ' + data.result.hash);
                     break;
                 case EventType.REPLY.SCAN_CANCEL:
                 
-                    plog('scan cancel');
+                    //plog('scan cancel');
+                    break;
+                case EventType.REPLY.UPLOAD_START:
+                
+                    //plog('upload start');
+                    break;
+                case EventType.REPLY.UPLOAD_ING:
+                
+                    //plog('upload process');
+                    break;
+                case EventType.REPLY.UPLOAD_SUCCESS:
+                
+                    //plog('upload success');
+                    break;
+                case EventType.REPLY.UPLOAD_CANCEL:
+                    
+                    //plog('upload cancel');
+                    break;
+                case EventType.REPLY.UPLOAD_ERROR:
+                    
+                    //plog('upload error');
                     break;
                 default:
             }

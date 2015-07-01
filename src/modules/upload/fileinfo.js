@@ -45,6 +45,11 @@
         
         processedSize : 0,
         
+        //下面两个只是辅助用的，因为两个worker算的进度不一样，需要取最小值作为实际进度
+        processedSizeSha : 0,
+        
+        processedSizeMd5 : 0,
+        
         errType : 1,
         
         errCode : 0,
