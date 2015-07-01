@@ -8,6 +8,8 @@
     global.FTN_H5.Util = factory();
 
 })(window, function() {
+    
+    var $ = window.jQuery;
 
     var uniqueKey = 0;
 
@@ -76,10 +78,6 @@
 
     };
     ( function() {
-
-            // if (!$.browser.ie) {
-            //  return;
-            // }
 
             var jsonpObj, gcGet, paramToStr, createFunName, callError, callSuccess, callComplete, callBeforeSend;
 
