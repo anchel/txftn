@@ -13,7 +13,11 @@
             SEND : {
                 FILE_SCAN : 11,
                 FILE_SCAN_CANCEL : 12,
-                BUF_SCAN : 21
+                
+                BUF_SCAN : 21,
+                
+                FILE_UPLOAD : 31,
+                FILE_UPLOAD_CANCEL : 32
             },
             REPLY : {
                 SCAN_START : 11,
@@ -24,7 +28,9 @@
                 
                 UPLOAD_START : 21,
                 UPLOAD_ING : 22,
-                UPLOAD_OVER : 23
+                UPLOAD_SUCCESS : 23,
+                UPLOAD_CANCEL : 24,
+                UPLOAD_ERROR : 25
             }
         },
         AlgType : {

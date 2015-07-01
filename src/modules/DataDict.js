@@ -5,7 +5,7 @@
     global.FTN_H5 = global.FTN_H5 || {};
     FTN_H5.DataDict = factory();
     
-})(window, function(){
+})(self || window, function(){
     
     /**
      * fieldMap = 

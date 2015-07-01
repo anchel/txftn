@@ -10,11 +10,19 @@
     var Emitter = FTN_H5.Emitter;
     var Util = FTN_H5.Util;
     
+    var FileInfo = FTN_H5.FileInfo;
+    
     var CONST_DEF = FTN_H5.CONST_DEF;
     var EventType = CONST_DEF.EventType;
     var AlgType = CONST_DEF.AlgType;
     
     var emptyFn = function(){};
+    
+    function log(msg){
+        if(window.console && console.log){
+            console.log(msg);
+        }
+    }
     
     var $ = window.jQuery;
     
@@ -27,6 +35,9 @@
         onSuccess : emptyFn,
         onError : emptyFn,
         
+        uploadInfo : {
+            
+        },
         
         triggerSelector : '.upload_file_input'
     };
@@ -39,19 +50,66 @@
         
     };
     
+    function onSelect(fio){
+        log('onSelect ' + fio.name);
+        _options.onSelect(fio);
+    }
+    
+    function onStart(fio){
+        log('onStart ' + fio.name);
+        _options.onStart(fio);
+    }
+    
+    function onScanProgress(fio){
+        log('onScanProgress ' + fio.name + ' process:' + fio.processedSize);
+        _options.onScanProgress(fio);
+    }
+    
+    function onUploadStart(fio){
+        log('onUploadStart ' + fio.name);
+        _options.onUploadStart(fio);
+    }
+    
+    function onUploadProgress(fio){
+        log('onUploadProgress ' + fio.name);
+        _options.onUploadProgress(fio);
+    }
+    
+    function onSuccess(fio){
+        log('onSuccess ' + fio.name);
+        _options.onSuccess(fio);
+    }
+    
+    function onCancel(fio){
+        log('onCancel ' + fio.name);
+        _options.onCancel(fio);
+    }
+    
+    function onError(fio){
+        log('onError ' + fio.name);
+        _options.onError(fio);
+    }
+    
     function createUploadCore(file){
         var uniqueKey = Util.getUniqueKey();
-        var fio = {
+        var fio = new FileInfo({
             uniqueKey : uniqueKey,
-            file : file
-        };
-        var uc = new FTN_H5.UploadCore(fio);
-        uploadCoreObjMap[uniqueKey] = uc;
-        return {
-            uniqueKey : uniqueKey,
+            file : file,
             name : file.name,
             size : file.size
-        };
+        });
+        
+        var uc = new FTN_H5.UploadCore(fio);
+        uc.onStart = onStart;
+        uc.onScanProgress = onScanProgress;
+        uc.onUploadStart = onUploadStart;
+        uc.onUploadProgress = onUploadProgress;
+        uc.onSuccess = onSuccess;
+        uc.onCancel = onCancel;
+        uc.onError = onError;
+        
+        uploadCoreObjMap[uniqueKey] = uc;
+        return fio;
     }
     
     function initEvent(){
@@ -63,7 +121,7 @@
             }
             for(var i=0,len=files.length; i<len; i++){
                 var fio = createUploadCore(files[i]);
-                _options.onSelect(fio);
+                onSelect(fio);
             }
         });
     }

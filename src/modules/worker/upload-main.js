@@ -20,5 +20,42 @@
     
     var defaultChunkSize = 2097152;  //2 * 1024 * 1024
     
+    var uniqueKeyMap = {
+        
+    };
     
+    function replyMsg(msg){
+        self.postMessage(msg);
+    }
+    
+    self.addEventListener('message', function(e){
+        var data = e.data;
+        if(typeof data.eventType == 'undefined') return;
+        switch(data.eventType){
+            case EventType.SEND.FILE_UPLOAD:
+                uploadFile(data);
+                
+                break;
+            case EventType.SEND.FILE_UPLOAD_CANCEL:
+                cancelUploadFile(data);
+                
+                break;
+            default:
+                break;
+        }
+        
+    }, false);
+    
+    
+    function uploadFile(data){
+        
+    }
+    
+    
+    function cancelUploadFile(data){
+        var uniqueKey = data.uniqueKey;
+        if(typeof uniqueKeyMap[uniqueKey] != 'undefined'){
+            uniqueKeyMap[uniqueKey] = 0; //置一个标志位为取消
+        }
+    }
 });
