@@ -86,11 +86,31 @@
 				plog('onUploadStart ' + fio.name + ' ' + fio.size + ' md5:' + fio.md5 + ' sha:' + fio.sha);
 			}
 			
+			function onUploadProgress(fio){
+				plog('onUploadProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+			}
+			
+			function onSuccess(fio){
+				plog('onSuccess ' + fio.name + ' ' + fio.size + ' md5:' + fio.md5 + ' sha:' + fio.sha);
+			}
+			
+			function onCancel(){
+			
+			}
+			
+			function onError(){
+			
+			}
+			
 			FTN_H5.UploadMain.init({
 				triggerSelector : '.upload_file_input',
 				onSelect : onSelect,
 				onScanProgress : onScanProgress,
-				onUploadStart : onUploadStart
+				onUploadStart : onUploadStart,
+				onUploadProgress : onUploadProgress,
+				onSuccess : onSuccess,
+				onCancel : onCancel,
+				onError : onError
 			});
 			
 			$('#file_list').on('click', '[data-fiokey]', function(e){

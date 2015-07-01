@@ -100,10 +100,8 @@
             
             //如果md5和sha1的值都计算完了，则进行下一步获取vid
             if(fio.sha && fio.md5){
-                me.emit('uploadevent', {
-                    name : 'onUploadStart'
-                });
-            //    me.getVid();
+            //  me.getVid();
+                me.uploadFile();
             }
         },
         
@@ -143,7 +141,6 @@
                     });
                     
                     break;
-                    
                 case EventType.REPLY.UPLOAD_START:
                 
                     me.emit('uploadevent', {
@@ -159,18 +156,22 @@
                     });
                     break;
                 case EventType.REPLY.UPLOAD_SUCCESS:
-                
+                    me.emit('uploadevent', {
+                        name : 'onSuccess'
+                    });
                     
                     break;
                 case EventType.REPLY.UPLOAD_CANCEL:
                     me.emit('uploadevent', {
                         name : 'onCancel'
                     });
+                    
                     break;
                 case EventType.REPLY.UPLOAD_ERROR:
                     me.emit('uploadevent', {
                         name : 'onError'
                     });
+                    
                     break;
                 default:
             }
@@ -223,7 +224,9 @@
         },
         
         uploadFile : function(){
-            
+            var me = this;
+            var fio = me.fio;
+            me.waUpload.uploadFile(fio);
         }
     };
     

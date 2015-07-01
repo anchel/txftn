@@ -19,9 +19,11 @@
     var emptyFn = function(){};
     
     function log(msg){
+        /*
         if(window.console && console.log){
             console.log(msg);
         }
+        */
     }
     
     var $ = window.jQuery;
@@ -33,6 +35,7 @@
         onUploadStart : emptyFn,
         onUploadProgress : emptyFn,
         onSuccess : emptyFn,
+        onCancel : emptyFn,
         onError : emptyFn,
         
         uploadInfo : {

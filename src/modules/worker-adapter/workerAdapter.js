@@ -158,6 +158,9 @@
             this.postMessage(msg, callback);
         },
         
+        /**
+         * 取消扫描文件 
+         */
         cancelCal : function(uniqueKey, algType, callback){
             var msg = {
                 uniqueKey : uniqueKey,
@@ -165,6 +168,29 @@
                 algType : algType
             };
             this.postMessage(msg, callback);
+        },
+        
+        /**
+         * 上传文件 
+         */
+        uploadFile : function(fileInfo){
+            var msg = {
+                uniqueKey : fileInfo.uniqueKey,
+                eventType : EventType.SEND.FILE_UPLOAD,
+                fileInfo : fileInfo
+            };
+            this.postMessage(msg);
+        },
+        
+        /**
+         * 取消上传文件
+         */
+        cancelUpload : function(uniqueKey){
+            var msg = {
+                uniqueKey : uniqueKey,
+                eventType : EventType.SEND.FILE_UPLOAD_CANCEL
+            };
+            this.postMessage(msg);
         }
     };
     
