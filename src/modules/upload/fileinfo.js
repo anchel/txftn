@@ -56,7 +56,7 @@
         
         errMsg : '',
         
-        workerPath : 'http://v1.qq.com/anchel/test/txftn/dist/ftn.h5.alg-worker.js'
+        workerPath : '../dist/ftn.h5.alg-worker.js'
     };
     
     function FileInfo(options){
