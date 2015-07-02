@@ -10,7 +10,9 @@ module.exports = function(grunt) {
             worker: {
                 files: {
                     './src/dist/ftn.h5.alg-worker.js': [
+                        './src/util/CommonUtil.js',
                         './src/modules/ConstDef.js',
+                        './src/modules/DataDict.js',
                         './src/modules/algorithm/md5-spark.js',
                         './src/modules/algorithm/sha1-calculator.js',
                         './src/modules/algorithm/sha1-rusha.js',

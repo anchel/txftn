@@ -50,7 +50,7 @@
     DataDict.prototype = {
         add : function(field){
             var me = this;
-            var arr = typeof(field)=='array'?field:[field];
+            var arr = (Object.prototype.toString.call(field) === '[object Array]')?field:[field];
             for(var i=0,len=arr.length; i<len; i++){
                 var tmpField = arr[i];
                 var index = me.fieldNum++;
@@ -107,7 +107,13 @@
                     var field = fieldMap[fieldName];
                     
                     if(field.type == 'string'){ //自动将string -> arraybuffer
-                        var buffer = stringToBuffer(field.value, field.encoding);
+                        var buffer = null;
+                        if(field.hex == true){  //如果字符串是16进制格式
+                            buffer = hexToBuffer(field.value);
+                        }else{
+                            buffer = stringToBuffer(field.value, field.encoding);
+                        }
+                        
                         field.type = 'arraybuffer';
                         field.length = buffer.byteLength;
                         field.value = buffer;

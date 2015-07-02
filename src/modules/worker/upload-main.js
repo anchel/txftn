@@ -65,6 +65,8 @@
         
         var offsetParam = getRequestCommonBuffer(dictRequestCommon);
         
+        console.log('offsetParam : ' + JSON.stringify(offsetParam));
+        
         var xhr = new XMLHttpRequest();
         
         xhr.onload = function(e){
@@ -98,6 +100,7 @@
                     var recvBuffer = xhr.response;
                     dictResponse.setBuffer(recvBuffer);
                     var json = dictResponse.decode();
+                    console.log(json);
                 }
             }
             
@@ -244,6 +247,7 @@
             },
             {
                 type : 'string',
+                hex : true,
                 name : 'UKey',  //服务器返回的checkkey
                 length : 0,
                 value : checkkey
@@ -257,6 +261,7 @@
             },
             {
                 type : 'string',
+                hex : true,
                 name : 'FileKey',  //文件的sha值
                 length : 0,
                 value : sha
@@ -287,7 +292,7 @@
             },
             {
                 type : 'int',
-                name : 'offsetH', //偏移位 - 高位
+                name : 'OffsetH', //偏移位 - 高位
                 length : 4,
                 value : 0
             }
@@ -398,8 +403,8 @@
         var dv = new DataView(sendBuffer);
         dv.setUint32(LenOffset, totalLen-16, false);  //这里图方便写死16个字节吧
         
-        var startL = size % uintmax;
-        var startH = Math.round(size / uintmax);
+        var startL = start % uintmax;
+        var startH = Math.round(start / uintmax);
         dv.setUint32(OffsetOffset, startL, false);
         dv.setUint32(OffsetHOffset, startH, false);
         dv.setUint32(DataLenOffset, dataBufferLen, false);
