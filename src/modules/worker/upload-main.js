@@ -20,6 +20,7 @@
     
     
     var defaultChunkSize = 2097152;  //2 * 1024 * 1024
+    var uintmax = 4294967296;
     
     var uniqueKeyMap = {
         
@@ -59,6 +60,10 @@
         var chunks = Math.ceil(fileSize / chunkSize);
         
         var start = 0, end = 0;
+        var dictRequestCommon = getRequestDataDictCommon(fio);  //请求用的数据字典
+        var dictResponse = getReponseDataDict();  //返回用的数据字典
+        
+        var offsetParam = getRequestCommonBuffer(dictRequestCommon);
         
         var xhr = new XMLHttpRequest();
         
@@ -73,19 +78,27 @@
         var fr = new FileReader(); //后续需要考虑firefox的 同步接口
         fr.onload = function(e){
             
-            var fileBuffer = e.target.result;
+            var dataBuffer = e.target.result;
             
-            var hash = MD5_FACTORY.ArrayBuffer.hash(fileBuffer);
+            var hash = MD5_FACTORY.ArrayBuffer.hash(dataBuffer);
             
             var url = getPostUrl(fio, hash);
+            var sendBuffer = getRequestSendBuffer(dictRequestCommon, dataBuffer, start, offsetParam);
             
-            xhr.open('POST', url, false);
+            xhr.open('POST', url, false);  //async true false
             xhr.responseType = 'arraybuffer';
-            
-            xhr.send(data);
+            xhr.setRequestHeader('Accept', '*/*');
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+            xhr.send(sendBuffer);
             
             if(xhr.readyState == 4){
-                var status = xhr.status; //200
+                var status = xhr.status; //200是正常
+                
+                if(status == 200){
+                    var recvBuffer = xhr.response;
+                    dictResponse.setBuffer(recvBuffer);
+                    var json = dictResponse.decode();
+                }
             }
             
            
@@ -187,7 +200,7 @@
     //生成请求头部的公共部分
     function getRequestDataDictCommon(fio){
         var size = fio.size;
-        var uintmax = 4294967296;
+        
         var fileSize = size % uintmax;
         var fileSizeH = Math.round(size / uintmax);
         
@@ -295,7 +308,7 @@
                 type : 'int',
                 name : 'Cmd',
                 length : 4,
-                value : 1007
+                value : 0  //0-成功 其他-错误码
             },
             {
                 type : 'int',
@@ -329,5 +342,67 @@
             }
         ]);
         return dict;
+    }
+    
+    /**
+     * 构建公共头部初始buffer，并把相关修改字段的偏移量返回
+     *  
+     */
+    function getRequestCommonBuffer(dictCommon){
+        dictCommon.encode();
+        var LenOffset = dictCommon.getItemOffset('Len');
+        var OffsetOffset = dictCommon.getItemOffset('Offset');
+        var OffsetHOffset = dictCommon.getItemOffset('OffsetH');
+        var DataLenOffset = dictCommon.getItemOffset('DataLen');
+        
+        return {
+            Len : LenOffset,
+            Offset : OffsetOffset,
+            OffsetH : OffsetHOffset,
+            DataLen : DataLenOffset
+        };
+    }
+    
+    /**
+     * 根据公共头部和数据buffer，构造请求用的buffer
+     * 1、修改协议体长度
+     * 2、修改Offset和OffsetH
+     * 3、修改DataLen
+     * 
+     * ext : {
+     *     Len : 12,
+     *     Offset : xx,
+     *     OffsetH : xx,
+     *     DataLen : xx
+     * }
+     */
+    function getRequestSendBuffer(dictCommon, dataBuffer, start, offsetParam){
+        var commBuffer = dictCommon.buffer;
+        var commBufferLen = commBuffer.byteLength;
+        var dataBufferLen = dataBuffer.byteLength;
+        
+        var totalLen = commBufferLen + dataBufferLen;
+        var sendBuffer = new ArrayBuffer(totalLen);
+        
+        var u8arr = new Uint8Array(sendBuffer);
+        var commu8arr = new Uint8Array(commBuffer);
+        var datau8arr = new Uint8Array(dataBuffer);
+        u8arr.set(commu8arr, 0);
+        u8arr.set(datau8arr, commBufferLen);
+        
+        var LenOffset = offsetParam.Len;
+        var OffsetOffset = offsetParam.Offset;
+        var OffsetHOffset = offsetParam.OffsetH;
+        var DataLenOffset = offsetParam.DataLen;
+        
+        var dv = new DataView(sendBuffer);
+        dv.setUint32(LenOffset, totalLen-16, false);  //这里图方便写死16个字节吧
+        
+        var startL = size % uintmax;
+        var startH = Math.round(size / uintmax);
+        dv.setUint32(OffsetOffset, startL, false);
+        dv.setUint32(OffsetHOffset, startH, false);
+        dv.setUint32(DataLenOffset, dataBufferLen, false);
+        return sendBuffer;
     }
 });

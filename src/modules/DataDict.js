@@ -15,6 +15,7 @@
      *         type : [int string arraybuffer]
      *         name : 'bodyLen',
      *         length : 2,
+     *         offset : 0, //在buffer中的偏移位置
      *         value : 23 or 'abc' or buffer,
      *         encoding : 'utf-8' //needed when string
      *     },
@@ -79,7 +80,14 @@
         
         get : function(name){
             var me = this;
-            
+            var fieldMap = me.fieldMap;
+            return fieldMap[name];
+        },
+        
+        getItemOffset : function(name){
+            var me = this;
+            var fieldMap = me.fieldMap;
+            return fieldMap[name]?fieldMap[name].offset:0;
         },
         
         remove : function(){
@@ -122,6 +130,15 @@
                         }
                     }
                 }
+            }
+            
+            //设置每个field的offset，便于后期修改数据
+            var offset = 0;
+            var fieldArr = me.fieldArr;
+            for(var i=0,len=fieldArr.length; i<len; i++){
+                var field = fieldArr[i];
+                field.offset = offset;
+                offset = offset + field.length;
             }
         },
         
@@ -185,7 +202,7 @@
             }else if(length == 4){
                 view.setUint32(offset, field.value, field.littleEndian);
             }else{
-                alert('encodeIntField: length invalid');
+                //alert('encodeIntField: length invalid');
             }
             return offset + length; //return the new offset
         },
@@ -262,7 +279,7 @@
                 }else if(length == 4){
                     value = view.getUint32(offset, field.littleEndian);
                 }else{
-                    alert('encodeIntField: length invalid');
+                    //alert('encodeIntField: length invalid');
                 }
             }
             field.value = value;

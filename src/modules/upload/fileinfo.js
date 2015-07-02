@@ -33,7 +33,7 @@
         
         sha : '',
         
-        serverip : '',
+        serverip : '113.142.44.24',
         
         serverport : 80,
         
