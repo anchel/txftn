@@ -13,6 +13,7 @@ module.exports = function(grunt) {
                         './src/util/CommonUtil.js',
                         './src/modules/ConstDef.js',
                         './src/modules/DataDict.js',
+                        
                         './src/modules/algorithm/md5-spark.js',
                         './src/modules/algorithm/sha1-calculator.js',
                         './src/modules/algorithm/sha1-rusha.js',
@@ -35,7 +36,7 @@ module.exports = function(grunt) {
                         
                         './src/modules/worker-adapter/workerAdapter.js',
                         './src/modules/upload/fileinfo.js',
-                        './src/modules/upload/upload.xhr.js',
+
                         './src/modules/upload/upload.core.js',
                         './src/modules/upload/upload.main.js'
                     ]
