@@ -140,7 +140,7 @@
                         fio.processedSizeMd5 = processed;
                     }
                     fio.processedSize = Math.min(fio.processedSizeSha, fio.processedSizeMd5);
-                    fio.percent = (fio.processedSize / fio.size).toFixed(2);
+                    fio.percent = (fio.processedSize / fio.size).toFixed(5);
                     
                     me.emit('uploadevent', {
                         name : 'onScanProgress'
@@ -167,7 +167,7 @@
                 
                     var processed = data.result.processed;
                     fio.processedSize = processed;
-                    fio.percent = (fio.processedSize / fio.size).toFixed(2);
+                    fio.percent = (fio.processedSize / fio.size).toFixed(5);
                     
                     me.emit('uploadevent', {
                         name : 'onUploadProgress'
