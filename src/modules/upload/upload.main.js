@@ -152,7 +152,11 @@
         },
         
         cancel : function(fio){
-            
+            var uniqueKey = fio.uniqueKey;
+            var uc = uploadCoreObjMap[uniqueKey];
+            if(uc){
+                uc.cancel();
+            }
         },
         
         openSelectFileWindow : function(){
