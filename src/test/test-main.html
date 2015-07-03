@@ -65,21 +65,37 @@
 			
 			function onSelect(fio){
 				plog('onSelect ' + fio.name + ' ' + fio.size);
-				renderFio(fio);
+				addFio(fio);
 			}
 			
-			function renderFio(fio){
+			function addFio(fio){
 				fioMap[fio.uniqueKey] = fio;
-				var str = '<div><span style="width:300px;display: inline-block;">{name}</span><span style="width:200px;display: inline-block;">{size}</span><button data-fiokey="{key}">Start</button></div>';
-				str = str.replace('{name}', fio.name);
-				str = str.replace('{size}', fio.size);
-				str = str.replace('{key}', fio.uniqueKey);
+				var str = '<div id="fio_{key}"><span style="width:300px;display: inline-block;">{name} ({size})</span><span style="width:400px;display: inline-block;">Status:{uploadStatus} percent:{percent} processed:{processedSize}</span><button data-fiokey="{key}" data-act="start" style="margin:10px;">Start</button><button data-fiokey="{key}" data-act="cancel" style="margin:10px;">Cancel</button></div>';
+				str = str.replace(/\{name\}/g, fio.name);
+				str = str.replace(/\{size\}/g, fio.size);
+				str = str.replace(/\{key\}/g, fio.uniqueKey);
+				str = str.replace(/\{percent\}/g, (fio.percent*100).toFixed(2)+'%');
+				str = str.replace(/\{uploadStatus\}/g, fio.uploadStatus);
+				str = str.replace(/\{processedSize\}/g, fio.processedSize);
 				
 				$('#file_list').append(str);
 			}
+			function updateFio(fio){
+				var uniqueKey = fio.uniqueKey;
+				var el = $('#fio_'+uniqueKey);
+				var str = '<span style="width:300px;display: inline-block;">{name} ({size})</span><span style="width:400px;display: inline-block;">Status:{uploadStatus} percent:{percent} processed:{processedSize}</span><button data-fiokey="{key}" data-act="start" style="margin:10px;">Start</button><button data-fiokey="{key}" data-act="cancel" style="margin:10px;">Cancel</button>';
+				str = str.replace(/\{name\}/g, fio.name);
+				str = str.replace(/\{size\}/g, fio.size);
+				str = str.replace(/\{key\}/g, fio.uniqueKey);
+				str = str.replace(/\{percent\}/g, (fio.percent*100).toFixed(2)+'%');
+				str = str.replace(/\{uploadStatus\}/g, fio.uploadStatus);
+				str = str.replace(/\{processedSize\}/g, fio.processedSize);
+				el.html(str);
+			}
 			
 			function onScanProgress(fio){
-				plog('onScanProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+				//plog('onScanProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+				updateFio(fio);
 			}
 			
 			function onUploadStart(fio){
@@ -87,7 +103,8 @@
 			}
 			
 			function onUploadProgress(fio){
-				plog('onUploadProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+				//plog('onUploadProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
+				updateFio();
 			}
 			
 			function onSuccess(fio){
@@ -117,9 +134,14 @@
 				e.preventDefault();
 				var me = $(this);
 				var key = me.attr('data-fiokey');
+				var act = me.attr('data-act');
 				var fio = fioMap[key];
 				if(fio){
-					FTN_H5.UploadMain.start(fio);
+					if('start' == act){
+						FTN_H5.UploadMain.start(fio);
+					}else if('cancel' == act){
+						FTN_H5.UploadMain.cancel(fio);
+					}
 				}
 			});
         </script>

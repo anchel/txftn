@@ -77,7 +77,12 @@
         },
         
         cancel : function(){
-            
+            var fio = this.fio;
+            if(fio.uploadStatus == 1){  //scan
+                this.cancelScan();
+            }else if(fio.uploadStatus == 2){ //upload
+                this.cancelUpload();
+            }
         },
         
         getVid : function(){
@@ -125,6 +130,7 @@
                         fio.processedSizeMd5 = processed;
                     }
                     fio.processedSize = Math.min(fio.processedSizeSha, fio.processedSizeMd5);
+                    fio.percent = (fio.processedSize / fio.size).toFixed(2);
                     
                     me.emit('uploadevent', {
                         name : 'onScanProgress'
@@ -151,6 +157,8 @@
                 
                     var processed = data.result.processed;
                     fio.processedSize = processed;
+                    fio.percent = (fio.processedSize / fio.size).toFixed(2);
+                    
                     me.emit('uploadevent', {
                         name : 'onUploadProgress'
                     });
@@ -211,10 +219,13 @@
                 });
             }
         },
-        
+        /**
+         * 扫描文件 
+         */
         scanFile : function(){
             var me = this;
             var fio = me.fio;
+            fio.uploadStatus = 1;
             me.waAlgMd5.calFileMd5({
                 file : fio.file,
                 uniqueKey : fio.uniqueKey
@@ -225,10 +236,35 @@
             });
         },
         
+        /**
+         * 取消扫描 
+         */
+        cancelScan : function(){
+            var me = this;
+            var fio = me.fio;
+            var uniqueKey = fio.uniqueKey;
+            me.waAlgMd5.cancelCal(uniqueKey, AlgType.MD5);
+            me.waAlgSha.cancelCal(uniqueKey, AlgType.SHA1);
+        },
+        
+        /**
+         * 上传文件 
+         */
         uploadFile : function(){
             var me = this;
             var fio = me.fio;
+            fio.uploadStatus = 2;
             me.waUpload.uploadFile(fio);
+        },
+        
+        /**
+         * 取消上传 
+         */
+        cancelUpload : function(){
+            var me = this;
+            var fio = me.fio;
+            var uniqueKey = fio.uniqueKey;
+            me.waUpload.cancelUpload(uniqueKey);
         }
     };
     
