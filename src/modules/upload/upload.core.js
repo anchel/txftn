@@ -168,6 +168,8 @@
                     
                     break;
                 case EventType.REPLY.UPLOAD_ERROR:
+                    fio.errCode = data.result.code;
+                    fio.errMsg = data.result.msg;
                     me.emit('uploadevent', {
                         name : 'onError'
                     });

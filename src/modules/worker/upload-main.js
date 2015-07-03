@@ -69,14 +69,6 @@
         
         var xhr = new XMLHttpRequest();
         
-        xhr.onload = function(e){
-            
-        };
-        
-        xhr.onerror = function(){
-            
-        };
-        
         var fr = new FileReader(); //后续需要考虑firefox的 同步接口
         fr.onload = function(e){
             
@@ -91,62 +83,78 @@
             xhr.responseType = 'arraybuffer';
             xhr.setRequestHeader('Accept', '*/*');
             xhr.setRequestHeader('Cache-Control', 'no-cache');
-            xhr.send(sendBuffer);
-            
-            if(xhr.readyState == 4){
-                var status = xhr.status; //200是正常
-                
-                if(status == 200){
-                    var recvBuffer = xhr.response;
-                    dictResponse.setBuffer(recvBuffer);
-                    var json = dictResponse.decode();
-                    console.log(json);
-                }
-            }
-            
-           
-            
-            replyMsg({
-                uniqueKey : uniqueKey,
-                eventType : EventType.REPLY.UPLOAD_ING,  //进行中
-                result : {
-                    processed : end
-                }
-            });
-            
-            /*
-            if(currentChunk == chunks){
-                releaseRes();
-                
-                replyMsg({
-                    uniqueKey : uniqueKey,
-                    eventType : EventType.REPLY.UPLOAD_SUCCESS,  //成功
-                    result : {
-                        
+            try{
+                xhr.send(sendBuffer);
+                if(xhr.readyState == 4){
+                    var status = xhr.status; //200是正常
+                    
+                    if(status == 200){
+                        var recvBuffer = xhr.response;
+                        dictResponse.setBuffer(recvBuffer);
+                        dictResponse.decode();
+                        var resultCmd = dictResponse.getItemValue('Cmd');
+                        if(resultCmd == 0){  //0-无错误 其他-错误码
+                            var Flag = dictResponse.getItemValue('Flag');
+                            if(Flag == 1){ //1-上传完成 0-上传继续
+                                onSuccess();
+                            }else{
+                                var NextOffset = dictResponse.getItemValue('NextOffset');
+                                var NextOffsetH = dictResponse.getItemValue('NextOffsetH');
+                                start = NextOffsetH * uintmax + NextOffset;  //得到文件偏移量
+                                replyMsg({
+                                    uniqueKey : uniqueKey,
+                                    eventType : EventType.REPLY.UPLOAD_ING,  //进行中
+                                    result : {
+                                        processed : start
+                                    }
+                                });
+                                
+                                next();
+                            }
+                        }else{
+                            onError(resultCmd, 'server return error '+resultCmd);
+                        }
+                    }else{
+                        onError(status, 'upload http request error '+status);
                     }
-                });
-            }else{
-                
-                next();
+                }
+            }catch(e){
+                onError(e, 'upload http request exception '+e.message);
             }
-            */
+
         };
         
         fr.onerror = function(e){
-            replyMsg({
-                uniqueKey : uniqueKey,
-                eventType : EventType.REPLY.UPLOAD_ERROR,  //错误
-                result : {
-                    code : 111,
-                    msg : 'read error'
-                }
-            });
-            releaseRes();
+            onError(111, 'FileReader read error');
         };
         
         fr.onabort = function(){
             
         };
+        
+        function onSuccess(){
+            releaseRes();
+            
+            replyMsg({
+                uniqueKey : uniqueKey,
+                eventType : EventType.REPLY.UPLOAD_SUCCESS,  //成功
+                result : {
+                    
+                }
+            });
+        }
+        
+        function onError(code, msg){
+            replyMsg({
+                uniqueKey : uniqueKey,
+                eventType : EventType.REPLY.UPLOAD_ERROR,  //错误
+                result : {
+                    code : code,
+                    msg : msg
+                }
+            });
+            releaseRes();
+        }
         
         function next(){
             if(!uniqueKeyMap[uniqueKey]){ //可能是被设置为取消状态了
@@ -160,8 +168,7 @@
                 releaseRes();
                 return;
             }
-            
-            start = end;
+
             end = Math.min(fileSize, start+chunkSize);
             fr.readAsArrayBuffer(file.slice(start, end));
         }
@@ -381,7 +388,7 @@
      *     DataLen : xx
      * }
      */
-    function getRequestSendBuffer(dictCommon, dataBuffer, start, offsetParam){
+    function getRequestSendBuffer(dictCommon, dataBuffer, startOffset, offsetParam){
         var commBuffer = dictCommon.buffer;
         var commBufferLen = commBuffer.byteLength;
         var dataBufferLen = dataBuffer.byteLength;
@@ -403,8 +410,8 @@
         var dv = new DataView(sendBuffer);
         dv.setUint32(LenOffset, totalLen-16, false);  //这里图方便写死16个字节吧
         
-        var startL = start % uintmax;
-        var startH = Math.round(start / uintmax);
+        var startL = startOffset % uintmax;
+        var startH = Math.round(startOffset / uintmax);
         dv.setUint32(OffsetOffset, startL, false);
         dv.setUint32(OffsetHOffset, startH, false);
         dv.setUint32(DataLenOffset, dataBufferLen, false);

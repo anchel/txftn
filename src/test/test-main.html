@@ -94,12 +94,12 @@
 				plog('onSuccess ' + fio.name + ' ' + fio.size + ' md5:' + fio.md5 + ' sha:' + fio.sha);
 			}
 			
-			function onCancel(){
-			
+			function onCancel(fio){
+				plog('onCancel ' + fio.name + ' ' + fio.size + ' md5:');
 			}
 			
-			function onError(){
-			
+			function onError(fio){
+				plog('onError ' + fio.name + ' ' + fio.size + ' code:' + fio.errCode + ' msg:' + fio.errMsg);
 			}
 			
 			FTN_H5.UploadMain.init({

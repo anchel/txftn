@@ -84,6 +84,15 @@
             return fieldMap[name];
         },
         
+        /**
+         * 基本只处理数字型 
+         */
+        getItemValue : function(name){
+            var me = this;
+            var fieldMap = me.fieldMap;
+            return fieldMap[name]?fieldMap[name].value:0;
+        },
+        
         getItemOffset : function(name){
             var me = this;
             var fieldMap = me.fieldMap;
