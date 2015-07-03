@@ -191,6 +191,13 @@
                 eventType : EventType.SEND.FILE_UPLOAD_CANCEL
             };
             this.postMessage(msg);
+        },
+        
+        terminate : function(){
+            if(this.worker){
+                this.worker.terminate();
+                this.worker = null;
+            }
         }
     };
     

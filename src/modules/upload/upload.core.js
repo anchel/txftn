@@ -99,8 +99,12 @@
             var hash = data.result.hash;
             if(algType == AlgType.SHA1){
                 fio.sha = hash;
+                me.waAlgSha.terminate();
+                me.waAlgSha = null;
             }else{
                 fio.md5 = hash;
+                me.waAlgMd5.terminate();
+                me.waAlgMd5 = null;
             }
             
             me._checkAlgHashReady();
@@ -173,7 +177,9 @@
                     me.emit('uploadevent', {
                         name : 'onSuccess'
                     });
-                    
+                    //释放资源
+                    me.waUpload.terminate();
+                    me.waUpload = null;
                     break;
                 case EventType.REPLY.UPLOAD_CANCEL:
                     me.emit('uploadevent', {
