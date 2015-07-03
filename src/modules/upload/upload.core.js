@@ -103,6 +103,12 @@
                 fio.md5 = hash;
             }
             
+            me._checkAlgHashReady();
+        },
+        
+        _checkAlgHashReady : function(){
+            var me = this;
+            var fio = me.fio;
             //如果md5和sha1的值都计算完了，则进行下一步获取vid
             if(fio.sha && fio.md5){
             //  me.getVid();
@@ -226,14 +232,24 @@
             var me = this;
             var fio = me.fio;
             fio.uploadStatus = 1;
-            me.waAlgMd5.calFileMd5({
-                file : fio.file,
-                uniqueKey : fio.uniqueKey
-            });
-            me.waAlgSha.calFileSha1({
-                file : fio.file,
-                uniqueKey : fio.uniqueKey
-            });
+            
+            if(!fio.md5){
+                me.waAlgMd5.calFileMd5({
+                    file : fio.file,
+                    uniqueKey : fio.uniqueKey
+                });
+            }else{
+                me._checkAlgHashReady();
+            }
+            
+            if(!fio.sha){
+                me.waAlgSha.calFileSha1({
+                    file : fio.file,
+                    uniqueKey : fio.uniqueKey
+                });
+            }else{
+                me._checkAlgHashReady();
+            }
         },
         
         /**
