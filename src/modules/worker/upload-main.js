@@ -119,7 +119,7 @@
                     }
                 }
             }catch(e){
-                onError(e, 'upload http request exception '+e.message);
+                onError(e.code, 'upload http request exception '+e.message);
             }
 
         };

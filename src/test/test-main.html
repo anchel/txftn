@@ -93,6 +93,14 @@
 				el.html(str);
 			}
 			
+			function onStart(fio){
+				plog('onStart ' + fio.name);
+			}
+			
+			function onScanStart(fio){
+				plog('onScanStart ' + fio.name);
+			}
+			
 			function onScanProgress(fio){
 				//plog('onScanProgress ' + fio.name + ' ' + fio.size + ' ' + fio.processedSize);
 				updateFio(fio);
@@ -122,6 +130,8 @@
 			FTN_H5.UploadMain.init({
 				triggerSelector : '.upload_file_input',
 				onSelect : onSelect,
+				onStart : onStart,
+				onScanStart : onScanStart,
 				onScanProgress : onScanProgress,
 				onUploadStart : onUploadStart,
 				onUploadProgress : onUploadProgress,

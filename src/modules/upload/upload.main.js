@@ -63,6 +63,11 @@
         _options.onStart(fio);
     }
     
+    function onScanStart(fio){
+        log('onScanStart ' + fio.name);
+        _options.onScanStart(fio);
+    }
+    
     function onScanProgress(fio){
         log('onScanProgress ' + fio.name + ' process:' + fio.processedSize);
         _options.onScanProgress(fio);
@@ -104,6 +109,7 @@
         
         var uc = new FTN_H5.UploadCore(fio);
         uc.onStart = onStart;
+        uc.onScanStart = onScanStart;
         uc.onScanProgress = onScanProgress;
         uc.onUploadStart = onUploadStart;
         uc.onUploadProgress = onUploadProgress;

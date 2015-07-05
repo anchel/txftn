@@ -18,7 +18,7 @@
     
     var $ = window.jQuery;
     
-    var methodArr = ['onStart', 'onScanProgress', 'onUploadStart', 'onUploadProgress', 'onSuccess', 'onCancel', 'onError',];
+    var methodArr = ['onStart', 'onScanStart', 'onScanProgress', 'onUploadStart', 'onUploadProgress', 'onSuccess', 'onCancel', 'onError',];
     var emptyFn = function(){};
     
     /**
@@ -66,6 +66,8 @@
         
         start : function(){
             var me = this;
+            
+            me.fio.uploadStatus = 0;
             
             me.createWorkerAdapter();
             
@@ -116,6 +118,9 @@
             //如果md5和sha1的值都计算完了，则进行下一步获取vid
             if(fio.sha && fio.md5){
             //  me.getVid();
+                if(fio.uploadStatus == 2){ 
+                    return;
+                }
                 me.uploadFile();
             }
         },
@@ -128,7 +133,9 @@
             
             switch(evType){
                 case EventType.REPLY.SCAN_START:
-                    
+                    me.emit('uploadevent', {
+                        name : 'onScanStart'
+                    });
                     
                     break;
                 case EventType.REPLY.SCAN_ING:
