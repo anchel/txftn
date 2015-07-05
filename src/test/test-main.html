@@ -95,6 +95,7 @@
 			
 			function onStart(fio){
 				plog('onStart ' + fio.name);
+				updateFio(fio);
 			}
 			
 			function onScanStart(fio){
@@ -108,6 +109,7 @@
 			
 			function onUploadStart(fio){
 				plog('onUploadStart ' + fio.name + ' ' + fio.size + ' md5:' + fio.md5 + ' sha:' + fio.sha);
+				updateFio(fio);
 			}
 			
 			function onUploadProgress(fio){
